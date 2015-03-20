@@ -749,10 +749,6 @@ QUnit.testDone(function( details ) {
 
 if ( defined.document ) {
 	if ( document.readyState === "complete" ) {
-		if ( window.define && window.define.amd ) {
-			QUnit.config.autostart = false;
-		}
-
 		QUnit.load();
 	} else {
 		addEvent( window, "load", QUnit.load );

@@ -22,9 +22,8 @@
 
 		// Simulate a delay in loading the tests, as when they are loaded
 		// asynchronously using requirejs, steal, etc.
-		window.define = {
-			amd: {}
-		};
+		window.define = function() {};
+		window.define.amd = true;
 		setTimeout(function() {
 			var script = document.createElement( "script" );
 			script.src = "../dist/qunit.js";
