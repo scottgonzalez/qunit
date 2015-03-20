@@ -94,6 +94,7 @@ grunt.initConfig({
 		qunit: [
 			"test/index.html",
 			"test/autostart.html",
+			"test/amd.html",
 			"test/startError.html",
 			"test/logs.html",
 			"test/setTimeout.html",
