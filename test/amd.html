@@ -4,47 +4,50 @@
 	<meta charset="UTF-8">
 	<title>QUnit AMD Test Suite</title>
 	<link rel="stylesheet" href="../dist/qunit.css">
-</head>
-<body>
-	<div id="qunit"></div>
 	<script>
+
 	var beginData,
-		asyncDelay = 1000,
+		asyncDelay = 100,
 		times = {
 			pageLoaded: 0,
 			runStarted: 0
 		};
+	var now = Date.now || function() {
+		return new Date().getTime();
+	};
 
-	(function() {
-		var now = Date.now || function() {
-			return new Date().getTime();
-		};
+	// Simulate a delay in loading the tests, as when they are loaded
+	// asynchronously using requirejs, steal, etc.
+	window.define = function() {};
+	window.define.amd = true;
 
-		// Simulate a delay in loading the tests, as when they are loaded
-		// asynchronously using requirejs, steal, etc.
-		window.define = function() {};
-		window.define.amd = true;
-		setTimeout(function() {
-			var script = document.createElement( "script" );
-			script.src = "../dist/qunit.js";
-			script.onload = function loadTests() {
-				QUnit.load = (function( _load ) {
-					times.pageLoaded = now();
-					_load.call( QUnit );
-				})( QUnit.load );
-
-				QUnit.begin(function( data ) {
-					beginData = data;
-					times.runStarted = now();
-				});
-				var script = document.createElement( "script" );
-				script.src = "amd.js";
-				document.getElementsByTagName( "head" )[ 0 ].appendChild( script );
-			};
-			document.getElementsByTagName( "head" )[ 0 ].appendChild( script );
-		}, asyncDelay );
-	})();
 	</script>
+	<script src="../dist/qunit.js"></script>
+	<script>
+
+	QUnit.load = (function( _load ) {
+		return function() {
+			times.pageLoaded = now();
+			_load.call( QUnit );
+		}
+	})( QUnit.load );
+
+	QUnit.begin(function( data ) {
+		beginData = data;
+		times.runStarted = now();
+	});
+
+	setTimeout(function() {
+		var script = document.createElement( "script" );
+		script.src = "amd.js";
+		document.getElementsByTagName( "head" )[ 0 ].appendChild( script );
+	}, asyncDelay );
+
+	</script>
+
+</head>
+<body>
+	<div id="qunit"></div>
 	<script src="swarminject.js"></script>
 </body>
 </html>
